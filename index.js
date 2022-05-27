@@ -8,11 +8,23 @@ let timeSec=0;
 let timer=0; 
 let grandTime=0;
 let sixTrueOr4false=true;
-let flagTime=false;//gives a bonus score of (3*round) - (timer) at the end of the round
+let flagTime=false;
+let pauseTime=true
+//gives a bonus score of (3*round) - (timer) at the end of the round
 localStorage.setItem('LeaderBoard',JSON.stringify([]));
 //0-regular
 //1-Hacker
-const updateTimer =()=>timer++;
+const updateTimer =()=>{
+    timer++;
+    const timerElement=document.getElementById('timerElement')
+    if(timerElement){
+        if(pauseTime){
+            timerElement.textContent=`Time: 0 Seconds`
+        }else{
+            timerElement.textContent=`Time: ${timer} Seconds`
+        }
+    }
+};
 const replay=()=>{
     if(mode==0){
         makeNormalMode()
@@ -24,7 +36,6 @@ const replay=()=>{
         }
     }
 }
-
 const LeaderBoard=(score)=>{
     const root = document.getElementById('root')
     const LeaderP=document.createElement('p')
@@ -39,7 +50,7 @@ const LeaderBoard=(score)=>{
     for(let i=0;i<Math.min(score.length,5);i++){
         const scoreP=document.createElement('p')
         ldrBrd.appendChild(scoreP)
-        scoreP.textContent=`${i+1}: ${newscore[i]}`
+        scoreP.textContent=`${i+1}: ${newscore[i]} points`
         scoreP.className='RankingScore'
     }
 }
@@ -75,7 +86,6 @@ const gameOver=()=>{
     homeScreenDOM.innerText='Return Home'
     playAgainDOM.addEventListener('click',replay)
     homeScreenDOM.addEventListener('click',setHomePage)
-    
 }
 const makeGrid =(num)=>{
     const tilesGrid =document.getElementById('tilesGrid');
@@ -178,8 +188,7 @@ const checkCellNormal=(e)=>{
             PlayRound(4,round)
         }
     }
-    UpdateScore()
-    
+    UpdateScore()   
 }
 const addSound=()=>{
     const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-09a.mp3')
@@ -194,18 +203,22 @@ const addFunctionality=()=>{
     }
 }
 const ShowColorMatrixAndGameOn= async(randomNumber,num)=>{
+    timer=0;
     const cells = document.querySelectorAll('.cell')
     cells.forEach(x=>x.removeEventListener('click',checkCellNormal))
     let timeOut=0
+    pauseTime=true;
     for(let i=0;i<randomNumber.length+1;i++){
         let r=Math.floor(randomNumber[i]/num);
         let c=randomNumber[i]%num;
         setTimeout(()=>{
             if(i==randomNumber.length){
+                pauseTime=false
                 resetColor();
                 addFunctionality();
             }else{
                 resetColor()
+                timer=-1;
                 document.getElementById(`cell ${r} ${c}`).style.backgroundColor="black"
             }
         },timeOut+=500)
@@ -240,15 +253,19 @@ const addRoundAndScoreAndTimer=()=>{
     const home=document.getElementById('roundAndScoreDiv')
     const round= document.createElement('p')
     const score= document.createElement('p')
-    if(mode==1){
-        const timer=document.createElement('p')
-    }
     home.appendChild(round)
     home.appendChild(score)
     round.id='roundContent'
     round.className="Round"
     score.id='scoreContent'
     score.className="Score"
+    if(mode==1){
+        const timerElement=document.createElement('p')
+        home.appendChild(timerElement)
+        timerElement.textContent=`Time: ${timer} Seconds`
+        timerElement.id='timerElement'
+        timerElement.className="Timer"
+    }
 }
 const UpdateScore=()=>{
     document.getElementById('roundContent').innerText=`Round: ${round}`
