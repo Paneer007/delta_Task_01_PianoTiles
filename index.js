@@ -5,9 +5,13 @@ let score=0;
 let arr=[]
 let mode=null
 let timeSec=0;
+let timer=0; 
+let grandTime=0;
+let flagTime=false;//gives a bonus score of (3*round) - (timer) at the end of the round
 localStorage.setItem('LeaderBoard',JSON.stringify([]));
 //0-regular
 //1-Hacker
+const updateTimer =()=>timer++;
 const replay=()=>{
     if(mode==0){
         makeNormalMode()
@@ -22,18 +26,23 @@ const LeaderBoard=(score)=>{
     root.appendChild(LeaderP)
     root.appendChild(ldrBrd)
     LeaderP.textContent='Leader Board'
-    console.log(sort)
-    score.sort()
-    console.log(sort)
-    score.reverse()
-    console.log(sort)
-    for(let i=0;i<score.length;i++){
-        const score=document.createElement('p')
-        ldrBrd.appendChild(score)
-        score.innerText=`${i+1}-${score[i]}`
+    console.log(score)
+    let newscore = score.sort(function(a,b){return a - b})
+    newscore=newscore.reverse()
+    for(let i=0;i<Math.min(score.length,5);i++){
+        console.log(newscore[i])
+        const scoreP=document.createElement('p')
+        ldrBrd.appendChild(scoreP)
+        scoreP.textContent=`${i+1}-${newscore[i]}`
     }
 }
 const gameOver=()=>{
+    console.log(grandTime)
+    grandTime=0;
+    if(mode==1){
+        const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-12.mp3')
+        audio.play()
+    }
     const root=document.getElementById('root')
     root.innerHTML=''
     const gameOverDOM = document.createElement('h1')
@@ -98,7 +107,6 @@ const resetColor=()=>{
     tiles.forEach(x=>x.style.backgroundColor='beige')
 }
 const checkCellNormal=(e)=>{
-    
     const row= e.target.dataset.row
     const col = e.target.dataset.col
     if (gameMatrix[row][col]==-1){
@@ -109,22 +117,27 @@ const checkCellNormal=(e)=>{
             if(gameMatrix[row][col]==correct+1){
                 gameMatrix[row][col]=-1;
                 correct++
-                score++
+                score+=10
             }else{
+                grandTime+=timer;
                 gameOver();
                 return;
             }
-        }else if(gameMatrix[row][col]!=0){
+        }else{
+            if (gameMatrix[row][col]!=0){
             gameMatrix[row][col]=-1;
             correct++
-            score++
+            score+=10
+            }else{
+                grandTime+=timer;
+                gameOver();
+                return;
+            }
         }
-        
-    }else{
-        gameOver();
-        return;
-    }
+    }    
     if(correct==round){
+        score +=(3*round-timer>=0)?(3*round-timer):0
+        grandTime+=timer;
         console.log('habibi')
         correct=0;
         round++
@@ -134,14 +147,16 @@ const checkCellNormal=(e)=>{
             PlayRound(4,round)
         }
     }
-    UpdateScore()
+    if(mode==1){
+        UpdateScore()
+    }
 }
 const addSound=()=>{
     const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-09a.mp3')
     audio.play()
-
 }
 const addFunctionality=()=>{
+    timer=0
     const tiles = document.querySelectorAll('.cell');
     tiles.forEach(x=>x.addEventListener('click',checkCellNormal))
     if(mode==1){
@@ -165,7 +180,6 @@ const ShowColorMatrixAndGameOn= async(randomNumber,num)=>{
                 document.getElementById(`cell ${r} ${c}`).style.backgroundColor="black"
             }
         },timeOut+=500)
-
     }
 }
 const PlayRound=async(num,round)=>{
@@ -176,7 +190,6 @@ const PlayRound=async(num,round)=>{
     for(let i=0;i<randomNumber.length;i++){
         let r=Math.floor(randomNumber[i]/num);
         let c=randomNumber[i]%num;
-        //for hackermode make sure you index instead of one
         gameMatrix[r][c]=1;
         if(mode==1){
             gameMatrix[r][c]=i+1;
@@ -203,7 +216,6 @@ const addRoundAndScoreAndTimer=()=>{
 const UpdateScore=()=>{
     document.getElementById('roundContent').innerText=`round: ${round}`
     document.getElementById('scoreContent').innerText=`score: ${score}`
-
 }
 const resetScores=()=>{
     arr=[]
@@ -211,18 +223,36 @@ const resetScores=()=>{
     correct=0
     score=0
     mode=null
+    timer=0
+    grandTime=0;
 }
 const buildGameUI=()=>{
     const root=document.getElementById('root')
     root.innerHTML=''
-    const roundAnddScoreAndTimerDiv=document.createElement('div')
+    if(mode) {
+        const roundAnddScoreAndTimerDiv=document.createElement('div')
+        roundAnddScoreAndTimerDiv.id="roundAndScoreDiv"
+        root.appendChild(roundAnddScoreAndTimerDiv)
+        addRoundAndScoreAndTimer()
+        UpdateScore()
+    }
     const gameDiv = document.createElement('div')
-    root.appendChild(roundAnddScoreAndTimerDiv)
     root.appendChild(gameDiv)
     gameDiv.id="tilesGrid"
-    roundAnddScoreAndTimerDiv.id="roundAndScoreDiv"
-    addRoundAndScoreAndTimer()
-    UpdateScore()
+}
+const normalModeRuleAndStartGame=()=>{
+    const root = document.getElementById('root')
+    root.innerHTML=''
+    const normalH2= document.createElement('h1')
+    const rulesDiv=document.createElement('div')
+    const ruleTitle=  document.createElement('h2')
+    const rulesUL=document.createElement('ul')
+    const startGameButton=document.createElement('button')
+    root.appendChild(normalH2)
+    root.appendChild(rulesDiv)
+    root.appendChild(startGameButton)
+    rulesDiv.appendChild(ruleTitle)
+    rulesDiv.append
 }
 const makeNormalMode=()=>{
     resetScores()
@@ -232,6 +262,10 @@ const makeNormalMode=()=>{
     playGame(4)
 }
 const makeHackerMode=()=>{
+    if(!flagTime){
+        setInterval(updateTimer,1000)
+        flagTime= true;
+    }
     resetScores()
     mode=1
     buildGameUI()
@@ -244,7 +278,6 @@ const setHomePage=()=>{
     const buttonHacker = document.getElementById('hackerModeButton')
     buttonNormal.addEventListener('click',makeNormalMode)
     buttonHacker.addEventListener('click',makeHackerMode)
-
 }
 const homeMenuLayout=()=>{
     const gameNameDiv = document.createElement('div')
