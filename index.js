@@ -124,7 +124,7 @@ const resetColor=()=>{
     if(pauseTime==false){
         tiles.forEach(x=>x.classList.remove('highLightedTile'))
     }
-    tiles.forEach(x=>x.classList.remove('SelectedTile'))
+    setTimeout(()=>tiles.forEach(x=>x.classList.remove('SelectedTile'),300))
 }
 const checkCellNormal=(e)=>{
     const row= e.target.dataset.row
@@ -141,7 +141,7 @@ const checkCellNormal=(e)=>{
         }
     }else{
         if (gameMatrix[row][col]!=0){
-            gameMatrix[row][col]=
+            gameMatrix[row][col]=0;
             correct++
             score+=10
         }else{
@@ -157,6 +157,7 @@ const checkCellNormal=(e)=>{
         }
         correct=0;
         round++
+
         if(mode){
             if(sixTrueOr4false){
                 if(round>36){
@@ -200,8 +201,8 @@ const colorCell=(e)=>{
 const addFunctionality=()=>{
     timer=0
     const tiles = document.querySelectorAll('.cell');
-    tiles.forEach(x=>x.addEventListener('click',checkCellNormal))
     tiles.forEach(x=>x.addEventListener('click',colorCell))
+    tiles.forEach(x=>x.addEventListener('click',checkCellNormal))
     if(mode==1){
         tiles.forEach(x=>x.addEventListener('click',addSound))
     }
@@ -212,11 +213,14 @@ const ShowColorMatrixAndGameOn= async(randomNumber,num)=>{
     cells.forEach(x=>x.removeEventListener('click',checkCellNormal))
     let timeOut=0
     pauseTime=true;
-    for(let i=0;i<randomNumber.length+1;i++){
+    for(let i=-1;i<randomNumber.length+1;i++){
         let r=Math.floor(randomNumber[i]/num);
         let c=randomNumber[i]%num;
         setTimeout(()=>{
-            if(i==randomNumber.length){
+            if(i==-1){
+                null;
+            }
+            else if(i==randomNumber.length){
                 pauseTime=false
                 resetColor();
                 addFunctionality();
@@ -225,7 +229,7 @@ const ShowColorMatrixAndGameOn= async(randomNumber,num)=>{
                 timer=-1;
                 document.getElementById(`cell ${r} ${c}`).classList.add('highLightedTile')
             }
-        },timeOut+=600)
+        },timeOut+=500)
     }
 }
 const PlayRound=async(num,round)=>{
