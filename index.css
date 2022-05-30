@@ -121,14 +121,13 @@ h1{
 }
 @keyframes selectedTileAnim{
     to{
-        background-color: #1e212d ;
+        background-color: #313649;
     }
     from{
         background-color: beige;
     }
 
 }
-
 @keyframes highlightedTileAnim{
     to{
         background-color: beige;
