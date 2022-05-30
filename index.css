@@ -11,12 +11,6 @@
         background-color: beige;
     }
 }
-@media(min-width:800px){
-    .cell:hover{
-        width: 82px !important;
-        height: 82px !important;
-    }
-}
 
 .cell{
     width: 80px;
@@ -124,4 +118,34 @@ h1{
     align-items: center;
     padding: 24px;
     background-color: #1e212d;   
+}
+@keyframes selectedTileAnim{
+    to{
+        background-color: #1e212d ;
+    }
+    from{
+        background-color: beige;
+    }
+
+}
+
+@keyframes highlightedTileAnim{
+    to{
+        background-color: beige;
+    }
+    80%{
+        background-color: black;
+    }
+    from{
+        background-color: beige;
+    }
+}
+.highLightedTile{
+    animation-duration: 0.5s;
+    animation-name: highlightedTileAnim;
+}
+.SelectedTile{
+    animation-duration: 0.3s;
+    animation-name: selectedTileAnim;
+    animation-fill-mode: forwards;
 }

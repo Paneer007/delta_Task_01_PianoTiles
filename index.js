@@ -121,37 +121,35 @@ const listOfRandomInteger=(num,round)=>{
 }
 const resetColor=()=>{
     const tiles = document.querySelectorAll('.cell');
-    tiles.forEach(x=>x.style.backgroundColor='beige')
+    if(pauseTime==false){
+        tiles.forEach(x=>x.classList.remove('highLightedTile'))
+    }
+    tiles.forEach(x=>x.classList.remove('SelectedTile'))
 }
 const checkCellNormal=(e)=>{
     const row= e.target.dataset.row
     const col = e.target.dataset.col
-    if (gameMatrix[row][col]==-1){
-        null
-    }
-    else if(gameMatrix[row][col]!=-1){
-        if(mode==1){
-            if(gameMatrix[row][col]==correct+1){
-                gameMatrix[row][col]=-1;
-                correct++
-                score+=10
-            }else{
-                grandTime+=timer;
-                gameOver();
-                return;
-            }
-        }else{
-            if (gameMatrix[row][col]!=0){
-            gameMatrix[row][col]=-1;
+    if(mode==1){
+        if(gameMatrix[row][col]==correct+1){
+            gameMatrix[row][col]=0;
             correct++
             score+=10
-            }else{
-                grandTime+=timer;
-                gameOver();
-                return;
-            }
+        }else{
+            grandTime+=timer;
+            gameOver();
+            return;
         }
-    }    
+    }else{
+        if (gameMatrix[row][col]!=0){
+            gameMatrix[row][col]=
+            correct++
+            score+=10
+        }else{
+            grandTime+=timer;
+            gameOver();
+            return;
+        }
+    }
     if(correct==round){
         if(mode){
             score +=(3*round-timer>=0)?(3*round-timer):0
@@ -194,10 +192,16 @@ const addSound=()=>{
     const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-09a.mp3')
     audio.play()
 }
+const colorCell=(e)=>{
+    if(!pauseTime){
+        e.target.classList.add('SelectedTile')
+    }
+}
 const addFunctionality=()=>{
     timer=0
     const tiles = document.querySelectorAll('.cell');
     tiles.forEach(x=>x.addEventListener('click',checkCellNormal))
+    tiles.forEach(x=>x.addEventListener('click',colorCell))
     if(mode==1){
         tiles.forEach(x=>x.addEventListener('click',addSound))
     }
@@ -219,9 +223,9 @@ const ShowColorMatrixAndGameOn= async(randomNumber,num)=>{
             }else{
                 resetColor()
                 timer=-1;
-                document.getElementById(`cell ${r} ${c}`).style.backgroundColor="black"
+                document.getElementById(`cell ${r} ${c}`).classList.add('highLightedTile')
             }
-        },timeOut+=500)
+        },timeOut+=600)
     }
 }
 const PlayRound=async(num,round)=>{
