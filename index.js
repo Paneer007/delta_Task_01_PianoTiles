@@ -157,7 +157,6 @@ const checkCellNormal=(e)=>{
         }
         correct=0;
         round++
-
         if(mode){
             if(sixTrueOr4false){
                 if(round>36){
@@ -370,7 +369,6 @@ const homeMenuLayout=()=>{
     rootDiv.appendChild(gameNameDiv)
     rootDiv.appendChild(buttonListDiv)
     rootDiv.appendChild(rules)
-
     rules.appendChild(rulesHeader)
     rules.appendChild(rulesPara)
     buttonListDiv.appendChild(NormalMode)
@@ -400,8 +398,7 @@ const homeMenuLayout=()=>{
     In hackermode there is a time based reward system. If you managed to enter all the tiles within 3 x round seconds,
     you will be awarded a bonus score of 3 times the time spared.
     In normal mode the final score shall be displayed at the end but in hacker mode the score shall be showed cumulatively each round.
-    Futhermore in hackermode, there is also a leaderboard where top 5 scores shall be displayed.
-    `
+    Futhermore in hackermode, there is also a leaderboard where top 5 scores shall be displayed.`
 }
 function main(){
     setHomePage()

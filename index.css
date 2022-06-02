@@ -1,7 +1,6 @@
 @media(max-width: 400px){
     .OptionButton,.EndMenu{
         margin: 2px !important;
-
     }
     .cell{
         width: 55px !important;
@@ -11,7 +10,6 @@
         background-color: beige;
     }
 }
-
 .cell{
     width: 80px;
     height: 80px;
@@ -25,16 +23,15 @@
     justify-content: center;
     align-items: center;
 }
-
 h1{
     margin-top: 0;
 }
-
 #root,body,html{
     font-family: Montserrat;
     background-color:#6870e0;
     padding:0px;
     margin: 0px;
+    cursor:default;
 }
 .GameOverText
 ,.MainTitle{
@@ -103,7 +100,6 @@ h1{
     color: #6870e0;
     background-color: #1e212d;
 }
-
 .OptionButtonList{
     display: flex;
     flex-direction: row;
@@ -126,7 +122,6 @@ h1{
     from{
         background-color: beige;
     }
-
 }
 @keyframes highlightedTileAnim{
     to{
